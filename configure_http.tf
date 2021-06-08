@@ -1,5 +1,7 @@
 resource "null_resource" "remote_exe" {
-
+depends_on = [
+  aws_volume_attachment.ebs_att
+]
 
 provisioner "remote-exec" {
  connection {
@@ -11,8 +13,14 @@ provisioner "remote-exec" {
    
    
     inline = [
-      "sudo yum install httpd -y",
-      "sudo systemctl start httpd ",
+      "sudo yum  install httpd  -y",
+      "sudo systemctl start httpd",
+      "sudo mkfs.ext4 /dev/xvdc",
+      "sudo  mount /dev/xvdc  /var/www/html",
+      "sudo yum install git -y",
+      "sudo rm -rf /var/www/html/*",
+      "sudo git clone https://github.com/Sharma30042000/myweb1.git   /var/www/html/",
+      "sudo systemctl restart httpd",
     ]
   }
 
